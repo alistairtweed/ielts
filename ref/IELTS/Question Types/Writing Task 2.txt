@@ -1,0 +1,19 @@
+1.
+Stimulus: [Claim]
+Instructions: To what extent do you agree or disagree with this statement?
+
+2.
+Stimulus: Some people think [Claim 1]. Others believe [Claim 2].
+Instructions: Discuss both these views and give your own opinion.
+
+3.
+Stimulus: [Static Choice]
+Instructions: Do the advantages of this outweigh the disadvantages?
+
+4.
+Stimulus: [Dynamic Change]
+Instructions: Why is this? Do you think this is a positive or a negative development?
+
+5.
+Stimulus: [Problem]
+Instructions: What are the causes of this problem? What measures can be taken to solve it?

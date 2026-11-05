@@ -1,0 +1,14 @@
+Trends
+
+1. Line Graph (always dynamic)
+2. Bar Chart (dynamic or static)
+3. Pie Chart (dynamic or static)
+4. Table (dynamic or static)
+
+Changes
+
+5. Maps
+
+Stages
+
+6. Process

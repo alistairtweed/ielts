@@ -1,0 +1,21 @@
+Academic Word List (AWL)
+2000
+570 headwords
+
+English Vocabulary Profile (EVP)
+A1 - 784
+A2 - 1594 (total 2378)
+B1 - 2937 (total 5315)
+B2 - 4164 (total 9479)
+C1 - 2410 (total 11889)
+C2 - 3807 (total 15696)
+
+New Academic Word List (NAWL)
+2013
+963 words
+6% coverage
+
+New General Word List (NGWL)
+2013
+2801 words
+86% coverage
