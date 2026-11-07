@@ -16,7 +16,7 @@ npm run dev      # open the printed URL, then choose an interface
 npm run build    # static build in dist/ (opens from any folder)
 ```
 
-Routes: `#/current`, `#/legacy`, or `#/` for the chooser.
+Routes: `#/current`, `#/legacy`, `#/gallery` (every question type on one page, current style), or `#/` for the chooser.
 
 ## What was observed in the originals (5 Nov 2026)
 
@@ -90,9 +90,25 @@ src/skins/legacy/           legacy interface
 |---|---|
 | `single` | TRUE/FALSE/NOT GIVEN, YES/NO/NOT GIVEN, multiple choice (one answer) |
 | `multi` | choose TWO (or more); covers several question numbers |
-| `gap` | notes, table, summary or sentence completion with typed answers (`[[n]]` tokens in an HTML template) |
-| `gapdrag` | summary completion from a list (drag words into `[[n]]` slots) |
-| `match` | matching information, features or sentence endings (one slot per statement) |
-| `headings` | matching headings (slots sit above the passage paragraphs) |
+| `gap` | notes, table, summary (from the text) or sentence completion with typed answers (`[[n]]` tokens in an HTML template) |
+| `gapdrag` | summary completion from a list (drag words into `[[n]]` gaps) |
+| `match` | `display: 'matrix'` (default): table of radio buttons, for paragraph information and statements; `display: 'drag'`: sentence endings |
+| `headings` | matching headings (drop zones sit above the passage paragraphs) |
+| `short` | short-answer questions |
+| `diagram` | typed answer boxes positioned over an image (`labels: [{ n, x, y }]`, in % of the image) |
 
-These cover the question families in `ref/IELTS/Question Types/Reading.txt`. Diagram labelling is not yet included.
+## Current-interface question styling (`src/interactions/`)
+
+Each question type has its own component, built with Tailwind utilities. Values were measured from the newer demo on 7 Nov 2026.
+
+| Element | Measured style |
+|---|---|
+| Rubric | "Questions X–Y" bold, 8px below; instructions 24px line height, 16px below |
+| Question number | bold; 2px border, 3px radius; blue `#418ec8` when current, otherwise transparent |
+| Choice options | full-width rows, 9.6px × 32px padding, 1px apart; hover `#e4e4e4`; selected `#bbd8f0`; native radio/checkbox at left 8px |
+| Typed gap | 1px `#535353` border, 3px radius, min 178px wide, grows with text; empty shows the number bold and centred; focus: blue border plus 1px blue ring |
+| Drop zone | 24px high, 5px radius; empty 1px dashed `#333`; current 2px dashed blue; drag over 1px dashed blue; filled faint dashed border with the chip inside |
+| Answer chip | white, 1px `#919191` border, 4px radius, bold 1.1em; hover blue border plus glow; while dragging, the source turns pale; a placed heading leaves an empty space in the list |
+| Template headings | 1.1em bold (17.6px) |
+
+**Not yet checked against a live example** (no reference available in the Reading demo): the matching matrix, diagram labelling, sentence endings, short answer, table completion and summary completion from a list. They are styled to be consistent with the measured interactions.

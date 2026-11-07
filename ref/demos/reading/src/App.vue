@@ -2,6 +2,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import LegacyApp from './skins/legacy/LegacyApp.vue'
 import CurrentApp from './skins/current/CurrentApp.vue'
+import GalleryApp from './skins/current/GalleryApp.vue'
 
 // Minimal hash router: #/legacy, #/current, or the chooser page.
 const route = ref(location.hash)
@@ -13,6 +14,7 @@ onBeforeUnmount(() => removeEventListener('hashchange', sync))
 <template>
   <LegacyApp v-if="route === '#/legacy'" />
   <CurrentApp v-else-if="route === '#/current'" />
+  <GalleryApp v-else-if="route === '#/gallery'" />
   <main v-else class="mx-auto max-w-2xl p-8 font-sans">
     <h1 class="mb-2 text-2xl font-bold">Computer-delivered Reading test: interface demos</h1>
     <p class="mb-6 text-gray-600">
@@ -35,6 +37,10 @@ onBeforeUnmount(() => removeEventListener('hashchange', sync))
         </div>
       </a>
     </div>
+    <a href="#/gallery" class="mt-4 block rounded border border-gray-300 p-5 hover:border-black">
+      <div class="mb-1 font-bold">Interaction gallery</div>
+      <div class="text-sm text-gray-600">Every Reading question type on one page, in the current interface's style.</div>
+    </a>
     <p class="mt-6 text-sm text-gray-500">
       Both open with a 60-minute countdown and end with a results screen (a self-study addition that the real test does
       not have).

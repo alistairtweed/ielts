@@ -13,9 +13,14 @@ export function clearPick() {
   Object.assign(picked, { groupId: null, value: null, fromN: null })
 }
 
+// The item currently being dragged (so its source can be shown faded).
+export const dragging = reactive({ groupId: null, value: null, fromN: null })
+
 export function dragPayload(e, groupId, value, fromN = null) {
   e.dataTransfer.setData('application/json', JSON.stringify({ groupId, value, fromN }))
   e.dataTransfer.effectAllowed = 'move'
+  Object.assign(dragging, { groupId, value, fromN })
+  e.target.addEventListener('dragend', () => Object.assign(dragging, { groupId: null, value: null, fromN: null }), { once: true })
 }
 
 export function readPayload(e) {

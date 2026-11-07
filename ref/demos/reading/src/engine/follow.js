@@ -11,7 +11,7 @@ export function useFollowCurrent(session) {
       if (!el) return
       el.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
       if (el.contains(document.activeElement)) return
-      if (el.matches('input, .drop-slot')) el.focus({ preventScroll: true })
+      if (el.matches('input, .drop-slot, [data-drop]')) el.focus({ preventScroll: true })
     },
   )
 }

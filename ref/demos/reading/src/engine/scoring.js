@@ -33,8 +33,8 @@ export function checkGroup(group, answers) {
     const given = answers[n] ?? ''
     let expected
     let correct
-    if (group.type === 'gap') {
-      const alts = group.answers[n]
+    if (group.type === 'gap' || group.type === 'diagram' || group.type === 'short') {
+      const alts = group.type === 'short' ? group.questions.find((x) => x.n === n).answer : group.answers[n]
       expected = alts.join(' / ')
       correct = alts.some((a) => norm(a) === norm(given))
     } else if (group.type === 'gapdrag') {
@@ -45,7 +45,7 @@ export function checkGroup(group, answers) {
       expected = labelFor({ options: q.options || group.options }, q.answer)
       correct = norm(given) === norm(q.answer)
     }
-    const shown = group.type === 'gap' ? given : given ? labelFor({ options: findOptions(group, n) }, given) : ''
+    const shown = ['gap', 'diagram', 'short'].includes(group.type) ? given : given ? labelFor({ options: findOptions(group, n) }, given) : ''
     rows.push({ n, given: shown, expected, correct })
   }
   return rows

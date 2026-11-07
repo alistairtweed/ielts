@@ -6,7 +6,7 @@ import { useTimer, minutesLeft, mmss } from '../../engine/timer.js'
 import { useFollowCurrent } from '../../engine/follow.js'
 import { selectionRange, wrapRange, unwrap, annotationAt, rangeEndRect } from '../../engine/annotate.js'
 import Passage from '../../components/Passage.vue'
-import QuestionsPane from '../../components/QuestionsPane.vue'
+import QuestionsPane from '../../interactions/QuestionsPane.vue'
 import ResultsView from '../../components/ResultsView.vue'
 import Icon from './Icon.vue'
 
@@ -284,7 +284,7 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
             class="absolute inset-0 flex"
           >
             <div class="overflow-y-auto pb-8 pl-4 pr-4 pt-6" :style="{ width: ui.split + '%' }">
-              <Passage :part="p" :session="session" />
+              <Passage :part="p" :session="session" skin="current" />
             </div>
             <div class="relative w-[2px] flex-none bg-black/50">
               <button
@@ -293,8 +293,8 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
                 @mousedown="startResize"
               >⟷</button>
             </div>
-            <div class="flex-1 overflow-y-auto pb-28 pl-4 pr-8 pt-6">
-              <QuestionsPane :part="p" :session="session" skin="current" />
+            <div class="flex-1 overflow-y-auto pb-28 pt-2">
+              <QuestionsPane :part="p" :session="session" />
             </div>
           </div>
           <div class="absolute bottom-9 right-8 flex gap-[2px]">

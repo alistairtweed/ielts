@@ -6,7 +6,10 @@
 //   single   one answer per question from a fixed option set (TFNG, YNNG, MCQ)
 //   multi    choose N answers from a list; covers N consecutive question numbers
 //   gap      type-in gaps inside an HTML template; tokens look like [[7]]
-//   match    one drop slot per question, filled from an option list (drag or click)
+//   match    matching; display 'matrix' (default: table of radio buttons) or
+//            'drag' (drop zone after each statement, e.g. sentence endings)
+//   short    short-answer questions with typed answers
+//   diagram  typed answer boxes positioned over an image
 //   gapdrag  drop slots inside an HTML template, filled from an option list
 //   headings drop slots placed at the top of passage paragraphs
 //
@@ -95,7 +98,6 @@ export default {
           from: 14, to: 17,
           instructions: 'The text has six sections, <b>A–F</b>. Which section contains the following information? Choose the correct letter, <b>A–F</b>. You may use any letter more than once.',
           reuse: true,
-          legacyDisplay: 'grid',
           options: ['A', 'B', 'C', 'D', 'E', 'F'].map((v) => ({ value: v, label: v })),
           questions: [
             { n: 14, text: 'an example of an animal that uses light to find its way', answer: 'B' },
@@ -109,7 +111,6 @@ export default {
           from: 18, to: 20,
           instructions: 'Look at the following statements and the list of people. Match each statement with the correct person, <b>A–C</b>.',
           reuse: true,
-          legacyDisplay: 'grid',
           optionsTitle: 'List of people',
           options: [
             { value: 'A', label: 'Dr Maria Okafor' },

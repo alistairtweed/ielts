@@ -1,8 +1,9 @@
 <script setup>
 import { computed } from 'vue'
 import DropSlot from './DropSlot.vue'
+import DropZone from '../interactions/DropZone.vue'
 
-const props = defineProps({ part: Object, session: Object })
+const props = defineProps({ part: Object, session: Object, skin: { type: String, default: 'legacy' } })
 
 // Headings questions put a drop slot above the paragraph they refer to.
 const headingSlots = computed(() => {
@@ -18,7 +19,8 @@ const headingSlots = computed(() => {
     <p v-if="part.subtitle" class="passage-subtitle" data-annotatable v-html="part.subtitle" />
     <section v-for="(p, i) in part.paragraphs" :key="i" class="passage-para">
       <div v-if="p.label && headingSlots[p.label]" class="heading-slot-row">
-        <DropSlot :session="session" :group="headingSlots[p.label].group" :n="headingSlots[p.label].n" wide />
+        <DropZone v-if="skin === 'current'" :session="session" :group="headingSlots[p.label].group" :n="headingSlots[p.label].n" block class="mb-1" />
+        <DropSlot v-else :session="session" :group="headingSlots[p.label].group" :n="headingSlots[p.label].n" wide />
       </div>
       <p>
         <b v-if="p.label" class="para-label">{{ p.label }}</b>

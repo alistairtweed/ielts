@@ -6,7 +6,7 @@ import OptionList from './OptionList.vue'
 // legacy skin + legacyDisplay 'grid': a table of radio cells, as in the 2019 demo.
 // Otherwise: drag the options into a slot beside each statement.
 const props = defineProps({ group: Object, session: Object, skin: String })
-const grid = props.skin === 'legacy' && props.group.legacyDisplay === 'grid'
+const grid = props.skin === 'legacy' && props.group.display !== 'drag'
 const hasNamedOptions = props.group.options.some((o) => o.label !== o.value)
 </script>
 
