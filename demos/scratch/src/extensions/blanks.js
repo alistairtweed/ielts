@@ -8,8 +8,8 @@ import BlankComponent from "~/components/Blank.vue"
 // its position in the document.
 //
 // Options:
-//   startNumber()  question number of the first blank in this editor (a function,
-//                  so it can follow page state)
+//   numberFor(questionId)  the blank's question number (when the editor is part of
+//                          a test); otherwise blanks are numbered 1, 2, 3… in order
 export const Blank = Node.create({
   name: "blank",
   group: "inline",
@@ -18,7 +18,7 @@ export const Blank = Node.create({
   selectable: true,
 
   addOptions() {
-    return { startNumber: () => 1 }
+    return { numberFor: null }
   },
 
   addAttributes() {
@@ -56,6 +56,17 @@ export const Blank = Node.create({
     }
   }
 })
+
+// Question IDs of the blanks in a document's JSON, in order.
+export function blankIdsIn(json) {
+  const ids = []
+  const walk = (node) => {
+    if (node.type === "blank") ids.push(node.attrs?.questionId)
+    node.content?.forEach(walk)
+  }
+  if (json) walk(json)
+  return ids
+}
 
 // [{ number, questionId }] in document order — what the page needs to list or
 // create the questions that go with the blanks.

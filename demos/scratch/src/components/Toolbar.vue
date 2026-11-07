@@ -1,5 +1,6 @@
 <script setup>
-  // Toolbar for the passage editor: only the elements passages and questions need.
+  // Editor toolbar. It shows only the tools whose commands the editor has, so each
+  // extension preset (passage, question group, playground) gets the right toolbar.
   import { computed, onBeforeUnmount, ref, watch } from "vue"
   import {
     BetweenHorizontalEnd,
@@ -97,13 +98,21 @@
   }
   const inTable = computed(() => tick.value >= 0 && props.editor?.isActive("table"))
 
-  const blockStyle = computed(() => blockStyles.find(isActive)?.key ?? "")
+  const supported = (item) => typeof props.editor?.commands[item.command] === "function"
+  const availableStyles = computed(() => blockStyles.filter(supported))
+  const visibleGroups = computed(() =>
+    groups
+      .map((group) => (group === "blockStyle" ? (availableStyles.value.length > 1 ? group : null) : group.filter(supported)))
+      .filter((group) => group && group.length)
+  )
+
+  const blockStyle = computed(() => availableStyles.value.find(isActive)?.key ?? "")
   const setBlockStyle = (key) => run(blockStyles.find((style) => style.key === key))
 </script>
 
 <template>
   <div v-if="editor" class="flex flex-wrap items-center gap-1 border-b border-neutral-300 bg-white px-2 py-1.5">
-    <template v-for="(group, i) in groups" :key="i">
+    <template v-for="(group, i) in visibleGroups" :key="i">
       <span v-if="i" class="mx-1 h-5 w-px bg-neutral-300" />
 
       <select
@@ -114,7 +123,7 @@
         @change="setBlockStyle($event.target.value)"
       >
         <option value="" disabled>Style</option>
-        <option v-for="style in blockStyles" :key="style.key" :value="style.key">{{ style.label }}</option>
+        <option v-for="style in availableStyles" :key="style.key" :value="style.key">{{ style.label }}</option>
       </select>
 
       <template v-else>

@@ -53,3 +53,59 @@
 .ProseMirror th { font-weight: 700; text-align: center; }
 .ProseMirror th > p, .ProseMirror td > p { margin: 0; }
 .ProseMirror .selectedCell { background: var(--color-indigo-50); }
+
+/* ------------------------------------------------------------------ builder form */
+
+.field-label { display: block; margin-bottom: 0.25rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--color-neutral-600); }
+.input { height: 2.25rem; border: 1px solid var(--color-neutral-300); border-radius: 0.375rem; background: white; padding: 0 0.625rem; font-size: 0.875rem; }
+.input:focus { outline: none; border-color: var(--color-indigo-400); }
+select.input { padding-right: 1.75rem; }
+.button, .button-secondary { display: inline-flex; align-items: center; gap: 0.375rem; height: 2.25rem; border-radius: 0.375rem; padding: 0 0.875rem; font-size: 0.875rem; font-weight: 500; }
+.button { background: var(--color-indigo-600); color: white; }
+.button:hover { background: var(--color-indigo-700); }
+.button:disabled { background: var(--color-neutral-300); }
+.button-secondary { border: 1px solid var(--color-neutral-300); background: white; color: var(--color-neutral-800); }
+.button-secondary:hover { background: var(--color-neutral-50); }
+.icon-button { display: inline-flex; align-items: center; justify-content: center; width: 1.75rem; height: 1.75rem; border-radius: 0.375rem; color: var(--color-neutral-500); }
+.icon-button:hover { background: var(--color-neutral-200); color: var(--color-neutral-900); }
+.link-button { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.875rem; font-weight: 500; color: var(--color-indigo-700); }
+.link-button:hover { text-decoration: underline; }
+.sortable-ghost { opacity: 0.4; }
+
+/* Editors inside the form are compact */
+.content-editor .ProseMirror { min-height: 7rem; padding: 0.75rem 1rem 1rem; }
+
+/* ------------------------------------------------------------------ print preview */
+
+.print-sheet { max-width: 46rem; margin: 0 auto; background: white; padding: 3rem 3.5rem; box-shadow: 0 1px 4px rgb(0 0 0 / 0.15); font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.5; color: black; }
+.print-passage { margin-bottom: 4rem; }
+.print-passage-heading { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem; }
+.print-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+.print-subtitle { font-size: 1.1rem; font-style: italic; margin-bottom: 1rem; }
+.print-content p { margin-bottom: 0.9rem; }
+.print-content h3 { font-weight: 700; font-size: 1.05rem; margin: 0.25rem 0 0.5rem; text-align: center; }
+.print-content h4 { font-weight: 700; margin: 0.75rem 0 0.25rem; }
+.print-content ul { list-style: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+.print-content table { border-collapse: collapse; margin: 0.5rem 0 1rem; }
+.print-content th, .print-content td { border: 1px solid black; padding: 0.3rem 0.5rem; vertical-align: top; white-space: nowrap; }
+.print-content th { font-weight: 700; }
+.print-content th > p, .print-content td > p, .print-content li > p { margin: 0; }
+.print-section { display: flex; gap: 1rem; }
+.print-section > div { flex: 1; }
+.print-section-label { width: 1.25rem; flex: none; font-weight: 700; }
+.print-footnote { font-size: 0.85rem; }
+.print-gap { white-space: nowrap; }
+.print-group { margin-top: 2.25rem; }
+.print-questions { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+.print-instruction { margin-bottom: 0.4rem; }
+.print-key { margin: 0.25rem 0 1rem 1.5rem; }
+.print-key td { padding: 0.1rem 1.5rem 0.1rem 0; vertical-align: top; }
+.print-question { display: flex; gap: 1rem; margin: 0.6rem 0; }
+.print-number { width: 1.75rem; flex: none; }
+.print-mcq { margin-bottom: 1rem; }
+.print-option { display: flex; gap: 1rem; margin: 0.2rem 0; }
+.print-option-indent { margin-left: 2.75rem; }
+.print-option-label { width: 1.75rem; flex: none; font-weight: 700; }
+.print-box { margin: 1rem 0; border: 1px solid black; padding: 0.75rem 1rem; }
+.print-box-content { border: none; padding: 0; }
+.print-box-title { font-weight: 700; text-align: center; margin-bottom: 0.5rem; }

@@ -13,13 +13,15 @@
   onBeforeUnmount(() => props.editor.off("update", bump))
 
   const number = computed(() => {
+    const numberFor = props.extension.options.numberFor
+    if (numberFor) return numberFor(props.node.attrs.questionId) ?? "?"
     revision.value
     const position = props.getPos()
     let index = 0
     props.editor.state.doc.descendants((node, pos) => {
       if (node.type.name === "blank" && pos < position) index++
     })
-    return props.extension.options.startNumber() + index
+    return 1 + index
   })
 </script>
 
