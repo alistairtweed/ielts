@@ -1,7 +1,23 @@
 <script setup>
-  // Buttons for everything StarterKit provides, plus sections and blanks.
-  // Each item: label, title, the command to run, and (optionally) what makes it "active".
-  import { onBeforeUnmount, ref, watch } from "vue"
+  // Toolbar for the passage editor: only the elements passages and questions need.
+  import { computed, onBeforeUnmount, ref, watch } from "vue"
+  import {
+    BetweenHorizontalEnd,
+    BetweenVerticalEnd,
+    Bold,
+    Columns3,
+    Italic,
+    List,
+    Merge,
+    PanelTop,
+    RectangleEllipsis,
+    Redo2,
+    Rows3,
+    Split,
+    Table,
+    Trash2,
+    Undo2
+  } from "lucide-vue-next"
 
   const props = defineProps({ editor: Object })
 
@@ -19,61 +35,104 @@
   )
   onBeforeUnmount(() => props.editor?.off("transaction", bump))
 
+  // Block styles. The four headings are stored as h1–h4.
+  const blockStyles = [
+    { key: "paragraph", label: "Paragraph", command: "setParagraph", active: ["paragraph"] },
+    { key: "title", label: "Passage title", command: "setHeading", args: { level: 1 }, active: ["heading", { level: 1 }] },
+    { key: "subtitle", label: "Passage subtitle", command: "setHeading", args: { level: 2 }, active: ["heading", { level: 2 }] },
+    { key: "summaryTitle", label: "Summary title", command: "setHeading", args: { level: 3 }, active: ["heading", { level: 3 }] },
+    { key: "summarySection", label: "Summary section", command: "setHeading", args: { level: 4 }, active: ["heading", { level: 4 }] },
+    { key: "footnote", label: "Footnote", command: "setFootnote", active: ["footnote"] }
+  ]
+
   const groups = [
     [
-      { label: "↶", title: "Undo", command: "undo" },
-      { label: "↷", title: "Redo", command: "redo" }
+      { icon: Undo2, title: "Undo", command: "undo" },
+      { icon: Redo2, title: "Redo", command: "redo" }
+    ],
+    "blockStyle",
+    [
+      { icon: Bold, title: "Bold", command: "toggleBold", active: ["bold"] },
+      { icon: Italic, title: "Italic", command: "toggleItalic", active: ["italic"] }
     ],
     [
-      { label: "P", title: "Paragraph", command: "setParagraph", active: ["paragraph"] },
-      { label: "H1", title: "Heading 1", command: "toggleHeading", args: { level: 1 }, active: ["heading", { level: 1 }] },
-      { label: "H2", title: "Heading 2", command: "toggleHeading", args: { level: 2 }, active: ["heading", { level: 2 }] },
-      { label: "H3", title: "Heading 3", command: "toggleHeading", args: { level: 3 }, active: ["heading", { level: 3 }] }
+      { icon: List, title: "Bullet list", command: "toggleBulletList", active: ["bulletList"] },
+      { icon: Table, title: "Insert table", command: "insertTable", args: { rows: 3, cols: 3, withHeaderRow: true } }
     ],
     [
-      { label: "B", title: "Bold", command: "toggleBold", active: ["bold"], class: "font-bold" },
-      { label: "I", title: "Italic", command: "toggleItalic", active: ["italic"], class: "italic" },
-      { label: "U", title: "Underline", command: "toggleUnderline", active: ["underline"], class: "underline" },
-      { label: "S", title: "Strikethrough", command: "toggleStrike", active: ["strike"], class: "line-through" },
-      { label: "</>", title: "Inline code", command: "toggleCode", active: ["code"], class: "font-mono" },
-      { label: "⌫", title: "Clear formatting", command: "unsetAllMarks" }
+      { icon: Split, title: "New section here", command: "splitSection", class: "rotate-90" },
+      { icon: Merge, title: "Merge section with previous (or remove it if there is no section before)", command: "mergeSectionWithPrevious", class: "rotate-90" }
     ],
-    [
-      { label: "• List", title: "Bullet list", command: "toggleBulletList", active: ["bulletList"] },
-      { label: "1. List", title: "Numbered list", command: "toggleOrderedList", active: ["orderedList"] },
-      { label: "❝", title: "Quote", command: "toggleBlockquote", active: ["blockquote"] },
-      { label: "{ }", title: "Code block", command: "toggleCodeBlock", active: ["codeBlock"], class: "font-mono" },
-      { label: "―", title: "Horizontal rule", command: "setHorizontalRule" },
-      { label: "↵", title: "Line break", command: "setHardBreak" }
-    ],
-    [
-      { label: "New section here", title: "Start a new section at this paragraph", command: "splitSection" },
-      { label: "Merge with previous", title: "Join this section onto the one before", command: "mergeSectionWithPrevious" }
-    ],
-    [{ label: "+ Blank", title: "Insert a blank (a question)", command: "insertBlank", class: "font-medium text-indigo-700" }]
+    [{ icon: RectangleEllipsis, title: "Insert blank", command: "insertBlank", class: "text-indigo-700" }]
+  ]
+
+  // Shown only while the cursor is in a table.
+  const tableTools = [
+    { icon: BetweenHorizontalEnd, title: "Add row below", command: "addRowAfter" },
+    { icon: BetweenVerticalEnd, title: "Add column to the right", command: "addColumnAfter" },
+    { icon: PanelTop, title: "Toggle header row", command: "toggleHeaderRow" },
+    { icon: Rows3, title: "Delete row", command: "deleteRow", class: "text-red-700" },
+    { icon: Columns3, title: "Delete column", command: "deleteColumn", class: "text-red-700" },
+    { icon: Trash2, title: "Delete table", command: "deleteTable", class: "text-red-700" }
   ]
 
   const run = (item) => props.editor.chain().focus()[item.command](item.args).run()
   const can = (item) => tick.value >= 0 && props.editor.can()[item.command](item.args)
   const isActive = (item) => tick.value >= 0 && item.active && props.editor.isActive(...item.active)
+  const inTable = computed(() => tick.value >= 0 && props.editor?.isActive("table"))
+
+  const blockStyle = computed(() => blockStyles.find(isActive)?.key ?? "")
+  const setBlockStyle = (key) => run(blockStyles.find((style) => style.key === key))
 </script>
 
 <template>
   <div v-if="editor" class="flex flex-wrap items-center gap-1 border-b border-neutral-300 bg-white px-2 py-1.5">
     <template v-for="(group, i) in groups" :key="i">
       <span v-if="i" class="mx-1 h-5 w-px bg-neutral-300" />
+
+      <select
+        v-if="group === 'blockStyle'"
+        title="Text style"
+        class="h-7 rounded border border-neutral-300 px-1.5 text-sm"
+        :value="blockStyle"
+        @change="setBlockStyle($event.target.value)"
+      >
+        <option value="" disabled>Style</option>
+        <option v-for="style in blockStyles" :key="style.key" :value="style.key">{{ style.label }}</option>
+      </select>
+
+      <template v-else>
+        <button
+          v-for="item in group"
+          :key="item.title"
+          type="button"
+          :title="item.title"
+          :aria-label="item.title"
+          :disabled="!can(item) && !isActive(item)"
+          class="flex h-7 w-7 items-center justify-center rounded text-neutral-800 hover:bg-neutral-100 disabled:cursor-default disabled:text-neutral-300 disabled:hover:bg-transparent"
+          :class="{ 'bg-neutral-200 hover:bg-neutral-200': isActive(item) }"
+          @mousedown.prevent
+          @click="run(item)"
+        >
+          <component :is="item.icon" :size="18" :class="item.class" />
+        </button>
+      </template>
+    </template>
+
+    <template v-if="inTable">
+      <span class="mx-1 h-5 w-px bg-neutral-300" />
       <button
-        v-for="item in group"
+        v-for="item in tableTools"
         :key="item.title"
         type="button"
         :title="item.title"
-        :disabled="!can(item) && !isActive(item)"
-        class="h-7 min-w-7 rounded px-1.5 text-sm text-neutral-800 hover:bg-neutral-100 disabled:cursor-default disabled:text-neutral-300 disabled:hover:bg-transparent"
-        :class="[item.class, { 'bg-neutral-200 hover:bg-neutral-200': isActive(item) }]"
+        :aria-label="item.title"
+        :disabled="!can(item)"
+        class="flex h-7 w-7 items-center justify-center rounded text-neutral-800 hover:bg-neutral-100 disabled:text-neutral-300"
         @mousedown.prevent
         @click="run(item)"
       >
-        {{ item.label }}
+        <component :is="item.icon" :size="18" :class="item.class" />
       </button>
     </template>
   </div>
