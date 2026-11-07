@@ -6,6 +6,7 @@
     BetweenVerticalEnd,
     Bold,
     Columns3,
+    CornerDownLeft,
     Italic,
     List,
     Merge,
@@ -15,6 +16,8 @@
     Rows3,
     Split,
     Table,
+    TableCellsMerge,
+    TableCellsSplit,
     Trash2,
     Undo2
   } from "lucide-vue-next"
@@ -35,11 +38,10 @@
   )
   onBeforeUnmount(() => props.editor?.off("transaction", bump))
 
-  // Block styles. The four headings are stored as h1–h4.
+  // Block styles. The passage title and subtitle are fields on the passage, not
+  // content; the two summary headings are stored as h3 and h4.
   const blockStyles = [
     { key: "paragraph", label: "Paragraph", command: "setParagraph", active: ["paragraph"] },
-    { key: "title", label: "Passage title", command: "setHeading", args: { level: 1 }, active: ["heading", { level: 1 }] },
-    { key: "subtitle", label: "Passage subtitle", command: "setHeading", args: { level: 2 }, active: ["heading", { level: 2 }] },
     { key: "summaryTitle", label: "Summary title", command: "setHeading", args: { level: 3 }, active: ["heading", { level: 3 }] },
     { key: "summarySection", label: "Summary section", command: "setHeading", args: { level: 4 }, active: ["heading", { level: 4 }] },
     { key: "footnote", label: "Footnote", command: "setFootnote", active: ["footnote"] }
@@ -53,7 +55,8 @@
     "blockStyle",
     [
       { icon: Bold, title: "Bold", command: "toggleBold", active: ["bold"] },
-      { icon: Italic, title: "Italic", command: "toggleItalic", active: ["italic"] }
+      { icon: Italic, title: "Italic", command: "toggleItalic", active: ["italic"] },
+      { icon: CornerDownLeft, title: "Line break (Shift+Enter)", command: "setHardBreak" }
     ],
     [
       { icon: List, title: "Bullet list", command: "toggleBulletList", active: ["bulletList"] },
@@ -70,7 +73,9 @@
   const tableTools = [
     { icon: BetweenHorizontalEnd, title: "Add row below", command: "addRowAfter" },
     { icon: BetweenVerticalEnd, title: "Add column to the right", command: "addColumnAfter" },
-    { icon: PanelTop, title: "Toggle header row", command: "toggleHeaderRow" },
+    { icon: PanelTop, title: "Toggle header row", command: "toggleHeaderRow", active: hasHeaderRow },
+    { icon: TableCellsMerge, title: "Merge selected cells (drag across cells to select them)", command: "mergeCells" },
+    { icon: TableCellsSplit, title: "Split cell", command: "splitCell" },
     { icon: Rows3, title: "Delete row", command: "deleteRow", class: "text-red-700" },
     { icon: Columns3, title: "Delete column", command: "deleteColumn", class: "text-red-700" },
     { icon: Trash2, title: "Delete table", command: "deleteTable", class: "text-red-700" }
@@ -78,7 +83,18 @@
 
   const run = (item) => props.editor.chain().focus()[item.command](item.args).run()
   const can = (item) => tick.value >= 0 && props.editor.can()[item.command](item.args)
-  const isActive = (item) => tick.value >= 0 && item.active && props.editor.isActive(...item.active)
+  const isActive = (item) =>
+    tick.value >= 0 && !!item.active && (typeof item.active === "function" ? item.active(props.editor) : props.editor.isActive(...item.active))
+
+  // The table around the cursor has a header row if its first row is header cells.
+  function hasHeaderRow(editor) {
+    const { $from } = editor.state.selection
+    for (let depth = $from.depth; depth > 0; depth--) {
+      const node = $from.node(depth)
+      if (node.type.name === "table") return node.firstChild?.firstChild?.type.name === "tableHeader"
+    }
+    return false
+  }
   const inTable = computed(() => tick.value >= 0 && props.editor?.isActive("table"))
 
   const blockStyle = computed(() => blockStyles.find(isActive)?.key ?? "")
@@ -129,6 +145,7 @@
         :aria-label="item.title"
         :disabled="!can(item)"
         class="flex h-7 w-7 items-center justify-center rounded text-neutral-800 hover:bg-neutral-100 disabled:text-neutral-300"
+        :class="{ 'bg-neutral-200 hover:bg-neutral-200': isActive(item) }"
         @mousedown.prevent
         @click="run(item)"
       >

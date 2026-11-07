@@ -1,5 +1,6 @@
 import { Node } from "@tiptap/core"
-import { Plugin, PluginKey } from "@tiptap/pm/state"
+import { Plugin, PluginKey, TextSelection } from "@tiptap/pm/state"
+import { Decoration, DecorationSet } from "@tiptap/pm/view"
 import { NodeRange } from "@tiptap/pm/model"
 import { canJoin } from "@tiptap/pm/transform"
 
@@ -37,10 +38,23 @@ export const Section = Node.create({
       //   inside a section: split it, so this block begins the next section
       //   outside a section: wrap this block and the ordinary blocks after it (up to
       //   the next section or footnote) in a new section
+      //   between blocks (the sideways "gap cursor", e.g. after the last section):
+      //   insert a new empty section there and put the cursor in it
       splitSection:
         () =>
         ({ state, tr, dispatch }) => {
-          const { $from } = state.selection
+          const { $from, empty } = state.selection
+
+          if ($from.depth === 0 && empty) {
+            if (dispatch) {
+              const { section, paragraph } = state.schema.nodes
+              tr.insert($from.pos, section.create({ key: newKey() }, paragraph.create()))
+              tr.setSelection(TextSelection.create(tr.doc, $from.pos + 2))
+              dispatch(tr.scrollIntoView())
+            }
+            return true
+          }
+
           const depth = sectionDepth($from)
 
           if (depth == null) {
@@ -93,6 +107,25 @@ export const Section = Node.create({
         key: new PluginKey("sectionKeys"),
         appendTransaction: (transactions, _oldState, newState) =>
           transactions.some((t) => t.docChanged) ? assignKeys(newState) : null
+      }),
+
+      // Mark sections that lie wholly inside the selection (e.g. select all), so
+      // they can be styled as selected.
+      new Plugin({
+        key: new PluginKey("sectionSelection"),
+        props: {
+          decorations(state) {
+            const { from, to, empty } = state.selection
+            if (empty) return null
+            const decorations = []
+            state.doc.forEach((node, pos) => {
+              if (node.type.name === "section" && from <= pos + 1 && pos + node.nodeSize - 1 <= to) {
+                decorations.push(Decoration.node(pos, pos + node.nodeSize, { class: "is-selected" }))
+              }
+            })
+            return DecorationSet.create(state.doc, decorations)
+          }
+        }
       })
     ]
   },

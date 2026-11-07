@@ -35,13 +35,13 @@
   color: var(--color-neutral-500);
 }
 .ProseMirror section:has(.ProseMirror-selectednode, :focus-within) { border-color: var(--color-indigo-300); }
+.ProseMirror section.is-selected,
+.ProseMirror section.ProseMirror-selectednode { border-color: var(--color-indigo-500); background: var(--color-indigo-50); }
 
 .ProseMirror p, .ProseMirror ul, .ProseMirror table { margin-bottom: 0.75rem; }
 .ProseMirror ul { list-style: disc; padding-left: 1.5rem; }
 
-/* Headings, by role */
-.ProseMirror h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }                 /* passage title */
-.ProseMirror h2 { font-size: 1.15rem; font-style: italic; margin-bottom: 1rem; }                  /* passage subtitle */
+/* Headings, by role (passage title and subtitle are passage fields, not content) */
 .ProseMirror h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; }                  /* summary title */
 .ProseMirror h4 { font-weight: 700; margin-bottom: 0.25rem; }                                     /* summary section */
 
@@ -49,7 +49,7 @@
 
 /* Tables (plain black rules, as in the test) */
 .ProseMirror table { border-collapse: collapse; }
-.ProseMirror th, .ProseMirror td { border: 1px solid black; padding: 0.3rem 0.5rem; vertical-align: top; min-width: 3rem; }
+.ProseMirror th, .ProseMirror td { border: 1px solid black; padding: 0.3rem 0.5rem; vertical-align: top; min-width: 3rem; white-space: nowrap; } /* line breaks are added by hand */
 .ProseMirror th { font-weight: 700; text-align: center; }
 .ProseMirror th > p, .ProseMirror td > p { margin: 0; }
 .ProseMirror .selectedCell { background: var(--color-indigo-50); }

@@ -10,8 +10,6 @@
   import { PassageDocument, Section } from "~/extensions/sections.js"
 
   const initialContent = `
-    <h1>The Pencil</h1>
-    <h2>A short history of an everyday object</h2>
     <section>
       <p>Few objects are as familiar, or as overlooked, as the pencil. Its story begins in the 1560s, when shepherds in Borrowdale discovered a black mineral* used to mark <span data-blank data-question-id="q-1"></span>.</p>
       <p>Borrowdale graphite was so pure that it could be sawn into sticks and used without further processing.</p>
@@ -21,7 +19,7 @@
       <table>
         <tr><th>Year</th><th>Development</th></tr>
         <tr><td>1560s</td><td>graphite found in Borrowdale</td></tr>
-        <tr><td>1795</td><td>Conté mixes graphite with <span data-blank data-question-id="q-3"></span></td></tr>
+        <tr><td>1795</td><td>Conté mixes graphite<br>with <span data-blank data-question-id="q-3"></span></td></tr>
       </table>
     </section>
     <p data-footnote>*plumbago: an old name for graphite, meaning "lead ore"</p>`
@@ -40,18 +38,20 @@
   const editor = useEditor({
     content: initialContent,
     extensions: [
-      // Only what passages and questions need: paragraphs, headings (h1–h4: passage
-      // title, passage subtitle, summary title, summary section), bold, italic and
-      // bullet lists. Our document replaces StarterKit's; its trailing node would add
-      // an empty paragraph at the end of every passage.
+      // Passage content needs only paragraphs, sections, bold, italic and footnotes
+      // (the title and subtitle are fields on the passage). Question content adds
+      // headings (h3 summary title, h4 summary section), bullet lists, tables, line
+      // breaks and blanks. One editor has everything for now; separate passage and
+      // question configurations can come later.
+      // Our document replaces StarterKit's; its trailing node would add an empty
+      // paragraph at the end of every passage.
       StarterKit.configure({
         document: false,
         trailingNode: false,
-        heading: { levels: [1, 2, 3, 4] },
+        heading: { levels: [3, 4] },
         blockquote: false,
         code: false,
         codeBlock: false,
-        hardBreak: false,
         horizontalRule: false,
         link: false,
         orderedList: false,
