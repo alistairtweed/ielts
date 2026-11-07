@@ -4,6 +4,15 @@
 import sample from './sampleTest.js'
 
 const passage = sample.parts[1]
+const choicePassage = sample.parts[2]
+
+// Headings use a passage without paragraph letters, as in the real test.
+const headings = JSON.parse(JSON.stringify(choicePassage.groups.find((g) => g.type === 'headings')))
+const offset = 42 - headings.from
+headings.from += offset
+headings.to += offset
+headings.questions.forEach((q) => (q.n += offset))
+headings.gallery = 'Match the paragraph headings'
 
 // Original diagram: a shielded streetlight beside a house.
 const streetlight = `
@@ -24,7 +33,7 @@ const streetlight = `
   <line x1="400" y1="200" x2="400" y2="170" stroke="#333"/>
 </svg>`
 
-export default {
+const gallery = {
   id: 'gallery',
   title: 'Interaction gallery',
   durationMinutes: 60,
@@ -96,14 +105,14 @@ export default {
         },
         {
           gallery: 'Complete the sentences',
-          type: 'gap',
+          type: 'sentences',
           from: 13, to: 15,
           instructions: 'Complete the sentences. Write <b>NO MORE THAN TWO WORDS</b> from the text for each answer.',
-          template: `
-            <p>Newly hatched sea turtles move towards the [[13]] they can see.</p>
-            <p>According to Lindqvist, [[14]] probably affect sleep more than streetlights.</p>
-            <p>Rao believes good lighting means the right amount of light in the right place at the right [[15]].</p>`,
-          answers: { 13: ['brightest horizon'], 14: ['indoor screens', 'screens'], 15: ['time'] },
+          questions: [
+            { n: 13, text: 'Newly hatched sea turtles move towards the [[13]] they can see.', answer: ['brightest horizon'] },
+            { n: 14, text: 'According to Lindqvist, [[14]] probably affect sleep more than streetlights.', answer: ['indoor screens', 'screens'] },
+            { n: 15, text: 'Rao believes good lighting means the right amount of light in the right place at the right [[15]].', answer: ['time'] },
+          ],
         },
         {
           gallery: 'Label the diagram',
@@ -167,28 +176,6 @@ export default {
             { n: 26, text: 'an example of an animal that uses light to find its way', answer: 'B' },
             { n: 27, text: 'definitions of different types of light pollution', answer: 'A' },
             { n: 28, text: 'an unintended consequence of a change in technology', answer: 'D' },
-          ],
-        },
-        {
-          gallery: 'Match the paragraph headings',
-          type: 'headings',
-          from: 29, to: 32,
-          instructions: 'The text has six sections, <b>A–F</b>. Choose the correct heading for sections <b>B–E</b> and move it into the gap.',
-          optionsTitle: 'List of Headings',
-          reuse: false,
-          options: [
-            { value: 'i', label: 'Simple and affordable solutions' },
-            { value: 'ii', label: 'Uncertain effects on human health' },
-            { value: 'iii', label: 'A threat to the natural world' },
-            { value: 'iv', label: 'The history of street lighting' },
-            { value: 'v', label: 'When saving energy backfires' },
-            { value: 'vi', label: 'Laws that ban outdoor lighting' },
-          ],
-          questions: [
-            { n: 29, paragraph: 'B', answer: 'iii' },
-            { n: 30, paragraph: 'C', answer: 'ii' },
-            { n: 31, paragraph: 'D', answer: 'v' },
-            { n: 32, paragraph: 'E', answer: 'i' },
           ],
         },
         {
@@ -268,5 +255,36 @@ export default {
         },
       ],
     },
+    {
+      number: 2,
+      title: choicePassage.title,
+      subtitle: choicePassage.subtitle,
+      paragraphLabels: false,
+      paragraphs: choicePassage.paragraphs,
+      groups: [headings],
+    },
   ],
 }
+
+// Number the questions consecutively across both passages.
+function renumber(test) {
+  let next = 1
+  for (const part of test.parts) {
+    for (const g of part.groups) {
+      const d = next - g.from
+      g.from += d
+      g.to += d
+      g.questions?.forEach((q) => (q.n += d))
+      g.labels?.forEach((l) => (l.n += d))
+      if (g.answers && !Array.isArray(g.answers)) {
+        g.answers = Object.fromEntries(Object.entries(g.answers).map(([k, v]) => [Number(k) + d, v]))
+      }
+      if (g.template) g.template = g.template.replace(/\[\[(\d+)\]\]/g, (_, n) => `[[${Number(n) + d}]]`)
+      g.questions?.forEach((q) => q.text && (q.text = q.text.replace(/\[\[(\d+)\]\]/g, (_, n) => `[[${Number(n) + d}]]`)))
+      next = g.to + 1
+    }
+  }
+  return test
+}
+
+export default renumber(gallery)

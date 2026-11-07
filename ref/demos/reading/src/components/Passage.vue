@@ -6,6 +6,7 @@ import DropZone from '../interactions/DropZone.vue'
 const props = defineProps({ part: Object, session: Object, skin: { type: String, default: 'legacy' } })
 
 // Headings questions put a drop slot above the paragraph they refer to.
+// part.paragraphLabels: false hides the letters (headings passages have none).
 const headingSlots = computed(() => {
   const g = props.part.groups.find((x) => x.type === 'headings')
   if (!g) return {}
@@ -23,7 +24,7 @@ const headingSlots = computed(() => {
         <DropSlot v-else :session="session" :group="headingSlots[p.label].group" :n="headingSlots[p.label].n" wide />
       </div>
       <p>
-        <b v-if="p.label" class="para-label">{{ p.label }}</b>
+        <b v-if="p.label && part.paragraphLabels !== false" class="para-label">{{ p.label }}</b>
         <span data-annotatable v-html="p.html" />
       </p>
     </section>

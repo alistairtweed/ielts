@@ -20,7 +20,14 @@ export function dragPayload(e, groupId, value, fromN = null) {
   e.dataTransfer.setData('application/json', JSON.stringify({ groupId, value, fromN }))
   e.dataTransfer.effectAllowed = 'move'
   Object.assign(dragging, { groupId, value, fromN })
-  e.target.addEventListener('dragend', () => Object.assign(dragging, { groupId: null, value: null, fromN: null }), { once: true })
+}
+
+// Reset at document level: the dragged element may unmount when it is dropped,
+// in which case it never receives its own dragend event.
+const resetDragging = () => Object.assign(dragging, { groupId: null, value: null, fromN: null })
+if (typeof document !== 'undefined') {
+  document.addEventListener('dragend', resetDragging, true)
+  document.addEventListener('drop', () => setTimeout(resetDragging), true)
 }
 
 export function readPayload(e) {

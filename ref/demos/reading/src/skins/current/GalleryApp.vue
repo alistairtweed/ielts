@@ -1,19 +1,34 @@
 <script setup>
+import { ref, watch } from 'vue'
 import test from '../../data/galleryTest.js'
 import { createSession } from '../../engine/session.js'
 import { useFollowCurrent } from '../../engine/follow.js'
 import Passage from '../../components/Passage.vue'
 import QuestionsPane from '../../interactions/QuestionsPane.vue'
 import ResultsView from '../../components/ResultsView.vue'
-import { ref } from 'vue'
+import SplitDivider from './SplitDivider.vue'
 
 // Every Reading interaction on one page, in the current interface's style.
+// Headings use a second passage without paragraph letters; the passage on the
+// left switches to match the questions being worked on.
 const session = createSession(test)
 session.state.stage = 'test'
 useFollowCurrent(session)
-const part = test.parts[0]
 const showResults = ref(false)
-const jump = (i) => document.getElementById(`group-${i}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+const split = ref(50)
+const box = ref(null)
+// Passage shown: the part of the current question, or of the questions under the pointer.
+const activePart = ref(0)
+watch(session.currentPartIndex, (pi) => (activePart.value = pi))
+const types = test.parts.flatMap((p, pi) => p.groups.map((g, gi) => ({ label: g.gallery, id: `p${pi}-g${gi}` })))
+
+function jump(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+function resize(x) {
+  const r = box.value.getBoundingClientRect()
+  split.value = Math.min(80, Math.max(20, ((x - r.left) / r.width) * 100))
+}
 </script>
 
 <template>
@@ -23,17 +38,23 @@ const jump = (i) => document.getElementById(`group-${i}`)?.scrollIntoView({ beha
       <h1 class="font-bold">Interaction gallery</h1>
       <select class="ml-4 border border-[#535353] px-2 py-1 text-sm" @change="jump($event.target.value)">
         <option value="" disabled selected>Jump to a question type…</option>
-        <option v-for="(g, i) in part.groups" :key="i" :value="i">{{ g.gallery }}</option>
+        <option v-for="t in types" :key="t.id" :value="t.id">{{ t.label }}</option>
       </select>
       <button class="ml-auto bg-black px-4 py-1.5 text-sm text-white" @click="showResults = !showResults">
         {{ showResults ? 'Back to questions' : 'Check answers' }}
       </button>
     </header>
     <main v-if="showResults" class="flex-1 overflow-auto"><ResultsView :session="session" @restart="showResults = false" /></main>
-    <div v-else class="flex min-h-0 flex-1">
-      <div class="w-1/2 overflow-y-auto px-4 pb-8 pt-6"><Passage :part="part" :session="session" skin="current" /></div>
-      <div class="w-[2px] flex-none bg-black/50" />
-      <div class="flex-1 overflow-y-auto pb-40 pt-2"><QuestionsPane :part="part" :session="session" show-type /></div>
+    <div v-else ref="box" class="flex min-h-0 flex-1">
+      <div class="overflow-y-auto px-4 pb-8 pt-6" :style="{ width: split + '%' }">
+        <Passage v-for="(p, pi) in test.parts" v-show="pi === activePart" :key="pi" :part="p" :session="session" skin="current" />
+      </div>
+      <SplitDivider @resize="resize" />
+      <div class="min-w-0 flex-1 overflow-y-auto pb-40 pt-2">
+        <div v-for="(p, pi) in test.parts" :key="pi" @mouseenter="activePart = pi">
+          <QuestionsPane :part="p" :session="session" show-type :id-prefix="`p${pi}-g`" />
+        </div>
+      </div>
     </div>
   </div>
 </template>

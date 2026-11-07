@@ -5,18 +5,19 @@ import GapTemplate from './GapTemplate.vue'
 import MatchMatrix from './MatchMatrix.vue'
 import SentenceEndings from './SentenceEndings.vue'
 import ShortAnswer from './ShortAnswer.vue'
+import SentenceCompletion from './SentenceCompletion.vue'
 import DiagramLabel from './DiagramLabel.vue'
 import ChipList from './ChipList.vue'
 
 // Questions column for the current interface. One block per question group.
-defineProps({ part: Object, session: Object, showType: Boolean })
+defineProps({ part: Object, session: Object, showType: Boolean, idPrefix: { type: String, default: 'group-' } })
 const title = (g) => (g.from === g.to ? `Question ${g.from}` : `Questions ${g.from}–${g.to}`)
 const inGroup = (s, g) => s.state.current >= g.from && s.state.current <= g.to
 </script>
 
 <template>
   <div class="pl-[17px] pr-4 pt-4">
-    <section v-for="(g, i) in part.groups" :id="`group-${i}`" :key="g.id" class="mb-10">
+    <section v-for="(g, i) in part.groups" :id="`${idPrefix}${i}`" :key="g.id" class="mb-10">
       <div v-if="showType && g.gallery" class="mb-3 inline-block rounded bg-[#418ec8] px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
         {{ g.gallery }}
       </div>
@@ -60,6 +61,7 @@ const inGroup = (s, g) => s.state.current >= g.from && s.state.current <= g.to
       <MatchMatrix v-else-if="g.type === 'match' && g.display !== 'drag'" :session="session" :group="g" />
       <SentenceEndings v-else-if="g.type === 'match'" :session="session" :group="g" />
       <ShortAnswer v-else-if="g.type === 'short'" :session="session" :group="g" />
+      <SentenceCompletion v-else-if="g.type === 'sentences'" :session="session" :group="g" />
       <DiagramLabel v-else-if="g.type === 'diagram'" :session="session" :group="g" />
       <ChipList v-else-if="g.type === 'headings'" :session="session" :group="g" :title="g.optionsTitle" />
     </section>

@@ -9,6 +9,7 @@ import Passage from '../../components/Passage.vue'
 import QuestionsPane from '../../interactions/QuestionsPane.vue'
 import ResultsView from '../../components/ResultsView.vue'
 import Icon from './Icon.vue'
+import SplitDivider from './SplitDivider.vue'
 
 const session = createSession(test)
 const { state } = session
@@ -69,13 +70,9 @@ function goToPart(pi) {
 
 // ------------------------------------------------------------ resizable split
 const splitBox = ref(null)
-function startResize(e) {
+function resize(x) {
   const box = splitBox.value.getBoundingClientRect()
-  const move = (ev) => (ui.split = Math.min(80, Math.max(20, ((ev.clientX - box.left) / box.width) * 100)))
-  const up = () => removeEventListener('mousemove', move) || removeEventListener('mouseup', up)
-  addEventListener('mousemove', move)
-  addEventListener('mouseup', up)
-  e.preventDefault()
+  ui.split = Math.min(80, Math.max(20, ((x - box.left) / box.width) * 100))
 }
 
 // ------------------------------------------------------- highlights & notes
@@ -286,36 +283,30 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
             <div class="overflow-y-auto pb-8 pl-4 pr-4 pt-6" :style="{ width: ui.split + '%' }">
               <Passage :part="p" :session="session" skin="current" />
             </div>
-            <div class="relative w-[2px] flex-none bg-black/50">
-              <button
-                class="absolute left-1/2 top-1/2 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 cursor-col-resize items-center justify-center border border-[var(--muted)] bg-[var(--bg)]"
-                title="Drag to resize"
-                @mousedown="startResize"
-              >⟷</button>
-            </div>
+            <SplitDivider @resize="resize" />
             <div class="flex-1 overflow-y-auto pb-28 pt-2">
               <QuestionsPane :part="p" :session="session" />
             </div>
           </div>
-          <div class="absolute bottom-9 right-8 flex gap-[2px]">
-            <button class="cu-arrow" :class="isFirst ? 'bg-[#ddd]' : 'bg-[#444]'" :disabled="isFirst" aria-label="Previous" @click="session.step(-1)">
+          <div class="absolute bottom-9 right-8 z-20 flex gap-[2.4px]">
+            <button class="cu-arrow" :class="isFirst ? 'cursor-default bg-[#ddd]' : 'bg-[#444]'" :disabled="isFirst" aria-label="Previous" @click="session.step(-1)">
               <Icon name="left" />
             </button>
-            <button class="cu-arrow border border-[var(--line)] bg-black" aria-label="Next" @click="next"><Icon name="right" /></button>
+            <button class="cu-arrow bg-black" aria-label="Next" @click="next"><Icon name="right" /></button>
           </div>
         </div>
 
         <!-- footer -->
-        <footer class="flex h-[53px] flex-none items-center text-[var(--muted)]">
+        <footer class="flex h-[53px] flex-none">
           <div
             v-for="(p, pi) in test.parts"
             :key="pi"
-            class="flex flex-1 items-center justify-center gap-3"
-            :class="{ 'flex-[2]': pi === partIndex }"
+            class="mx-px flex min-w-0 flex-1 border-t-[3px] border-[var(--bg)]"
+            :class="pi === partIndex ? 'min-w-fit' : 'justify-center'"
           >
             <template v-if="pi === partIndex">
-              <span class="whitespace-nowrap font-bold text-[var(--fg)]">Part {{ p.number }}</span>
-              <span class="flex gap-[5px]">
+              <button class="cu-footer-part whitespace-nowrap px-5 font-semibold text-[var(--fg)]" @click="goToPart(pi)">Part {{ p.number }}</button>
+              <span class="flex">
                 <button
                   v-for="it in footerItems(pi)"
                   :key="it.n"
@@ -325,12 +316,15 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
                 >{{ it.label }}</button>
               </span>
             </template>
-            <button v-else class="flex gap-4 whitespace-nowrap" @click="goToPart(pi)">
-              <span class="text-[var(--fg)]">Part {{ p.number }}</span>
-              <span>{{ session.attemptedCount(pi) }} of {{ session.partQuestions(pi).length }}</span>
+            <button
+              v-else
+              class="w-full whitespace-nowrap px-5 text-center text-[var(--fg)] hover:bg-[#efefef] hover:text-[#262626]"
+              @click="goToPart(pi)"
+            >
+              <span class="mr-4">Part {{ p.number }}</span><span class="text-[#757575]">{{ session.attemptedCount(pi) }} of {{ session.partQuestions(pi).length }}</span>
             </button>
           </div>
-          <button class="flex h-full w-[77px] items-center justify-center bg-[#efefef] text-[#535353]" aria-label="Review your answers" @click="state.stage = 'review'">
+          <button class="flex h-full w-[77px] flex-none items-center justify-center bg-[#efefef] text-[#535353]" aria-label="Review your answers" @click="state.stage = 'review'">
             <Icon name="check" />
           </button>
         </footer>

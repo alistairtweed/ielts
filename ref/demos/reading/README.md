@@ -11,9 +11,9 @@ Both use the **same original sample test** (`src/data/sampleTest.js`): three pas
 
 ```bash
 cd ref/demos/reading
-npm install
-npm run dev      # open the printed URL, then choose an interface
-npm run build    # static build in dist/ (opens from any folder)
+yarn install
+yarn dev         # open the printed URL, then choose an interface
+yarn build       # static build in dist/ (opens from any folder)
 ```
 
 Routes: `#/current`, `#/legacy`, `#/gallery` (every question type on one page, current style), or `#/` for the chooser.
@@ -94,7 +94,8 @@ src/skins/legacy/           legacy interface
 | `gapdrag` | summary completion from a list (drag words into `[[n]]` gaps) |
 | `match` | `display: 'matrix'` (default): table of radio buttons, for paragraph information and statements; `display: 'drag'`: sentence endings |
 | `headings` | matching headings (drop zones sit above the passage paragraphs) |
-| `short` | short-answer questions |
+| `short` | short-answer questions (numbered question, blank underneath) |
+| `sentences` | sentence completion (each sentence numbered, with its own blank) |
 | `diagram` | typed answer boxes positioned over an image (`labels: [{ n, x, y }]`, in % of the image) |
 
 ## Current-interface question styling (`src/interactions/`)
@@ -107,8 +108,14 @@ Each question type has its own component, built with Tailwind utilities. Values 
 | Question number | bold; 2px border, 3px radius; blue `#418ec8` when current, otherwise transparent |
 | Choice options | full-width rows, 9.6px × 32px padding, 1px apart; hover `#e4e4e4`; selected `#bbd8f0`; native radio/checkbox at left 8px |
 | Typed gap | 1px `#535353` border, 3px radius, min 178px wide, grows with text; empty shows the number bold and centred; focus: blue border plus 1px blue ring |
-| Drop zone | 24px high, 5px radius; empty 1px dashed `#333`; current 2px dashed blue; drag over 1px dashed blue; filled faint dashed border with the chip inside |
-| Answer chip | white, 1px `#919191` border, 4px radius, bold 1.1em; hover blue border plus glow; while dragging, the source turns pale; a placed heading leaves an empty space in the list |
+| Drop zone | 5px radius; 24px high for headings, 27px inline; empty 1px dashed `#333`; current 2px dashed blue; while dragging, empty zones turn 1px dashed `#0e98f0`; under the cursor, grey `rgba(0,0,0,.25)` (also the zone the answer came from); filled: faint dashed border with the chip inside |
+| Answer chip | white, 1px `#919191` border, 4px radius; headings bold 1.1em, other lists regular 16px; hover 1px `#0e98f0` border plus shadow `0 3px 6px rgba(0,0,0,.1), 0 3px 6px rgba(0,0,0,.15)`; a single-use answer fades while dragged and leaves an empty space once placed |
+| Answer list | a column to the right of the questions (summary from a list, matching by drag) |
+| Matrix | light grey frame; 2px black rule under the letters and left of the first option; 1px rules between columns and rows; radios at the top of the cells; chosen cell `#bbd8f0`; single-cell hover; named options listed in a table underneath |
+| Footer | three equal part tabs; inactive tabs: whole tab clickable, hover `#efefef`; question numbers touching, hover and current: blue border plus bold |
+| Divider | 2px line in a 16px grab area (`ew-resize`); hover: grey band, blue line; 32px button with a 2px border |
 | Template headings | 1.1em bold (17.6px) |
 
-**Not yet checked against a live example** (no reference available in the Reading demo): the matching matrix, diagram labelling, sentence endings, short answer, table completion and summary completion from a list. They are styled to be consistent with the measured interactions.
+**Sources:** the Reading demo; the Listening demo (drag-and-drop matching with the answer list on the right, the table style); a screenshot of the live matching matrix.
+
+**Not yet checked against a live example:** diagram labelling, sentence endings, short answer and sentence completion (these may not appear on the computer test), and summary completion from a list (drag and drop assumed, as in Listening).

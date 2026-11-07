@@ -104,12 +104,15 @@ mark.ann-note { background: #ffef3d; border-bottom: 2px solid #e0a800; }
 .skin-current .passage-subtitle { font-style: italic; margin: -.4em 0 1em; }
 .skin-current .passage { line-height: 1.5; }
 .skin-current .cu-iconbtn { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; color: var(--fg); }
-.skin-current .cu-footer-q { position: relative; padding: 2px 4px; border: 2px solid transparent; font-weight: 400; color: var(--fg); }
-.skin-current .cu-footer-q::before { content: ""; position: absolute; left: 0; right: 0; top: -13px; height: 3px; background: #ddd; }
-.skin-current .cu-footer-q.attempted::before { background: var(--done); }
+.skin-current .cu-footer-q { position: relative; margin: 11.6px 0; padding: 2.4px 4px; border: 2px solid transparent; border-radius: 3px; line-height: normal; color: var(--fg); }
+.skin-current .cu-footer-q:hover { border-color: var(--accent); font-weight: 700; background: var(--bg); }
 .skin-current .cu-footer-q.current { border-color: var(--accent); font-weight: 700; }
-.skin-current .cu-footer-q.flagged::after { content: ""; position: absolute; right: -2px; top: -4px; border: 5px solid transparent; border-top-color: #e31837; border-right-color: #e31837; }
-.skin-current .cu-arrow { width: 56px; height: 55px; display: inline-flex; align-items: center; justify-content: center; color: #fff; }
+/* progress bar along the top of the footer: grey, green once attempted */
+.skin-current .cu-footer-q::before, .skin-current .cu-footer-part::before { content: ""; position: absolute; left: 1px; right: 1px; top: -13.6px; height: 3px; background: #ddd; }
+.skin-current .cu-footer-part { position: relative; }
+.skin-current .cu-footer-part::before { top: -3px; }
+.skin-current .cu-footer-q.attempted::before { background: var(--done); }
+.skin-current .cu-arrow { width: 56px; height: 54px; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; color: #fff; }
 .skin-current .cu-popup { background: #fff; color: #333; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,.25); font-size: 12px; }
 
 /* Content of completion templates (current interface) */
@@ -118,6 +121,10 @@ mark.ann-note { background: #ffef3d; border-bottom: 2px solid #e0a800; }
 .qti-content p { margin: 16px 0; line-height: 24px; }
 .qti-content ul { list-style: disc; margin: 16px 0; padding-left: 40px; }
 .qti-content li { line-height: 24px; margin: 8px 0; }
-.qti-content table { border-collapse: collapse; width: 100%; margin: 16px 0; }
-.qti-content th, .qti-content td { border: 1px solid #535353; padding: 8px; vertical-align: top; text-align: left; line-height: 24px; }
-.qti-content th { font-weight: 700; background: #f1f2ec; }
+.qti-content table { border-collapse: collapse; border: 1px solid #000; margin: 16px 0; }
+.qti-content th, .qti-content td { border: 1px solid #000; padding: 4.8px 8px; vertical-align: top; text-align: left; line-height: 24px; }
+.qti-content th { font-weight: 700; text-align: center; vertical-align: middle; }
+.qti-content caption { caption-side: top; border: 1px solid #000; border-bottom: 0; padding: 16px 8px; font-size: 1.1em; font-weight: 700; }
+
+/* Paragraph letters (current interface): letter, then a wide gap */
+.skin-current .para-label { display: inline-block; width: 58px; margin: 0; }

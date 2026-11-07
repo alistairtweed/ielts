@@ -162,6 +162,7 @@ export default {
     // ---------------------------------------------------------------- PART 3
     {
       number: 3,
+      paragraphLabels: false, // headings passages have no paragraph letters
       title: 'Is More Choice Always Better?',
       subtitle: 'A psychologist weighs the evidence on decision-making',
       paragraphs: [
@@ -175,39 +176,40 @@ export default {
       groups: [
         {
           type: 'headings',
-          from: 27, to: 31,
-          instructions: 'The text has six paragraphs, <b>A–F</b>. Choose the correct heading for paragraphs <b>B–F</b> and move it into the gap.',
+          from: 27, to: 32,
+          instructions: 'The text has six paragraphs. Choose the correct heading for each paragraph and move it into the gap.',
           optionsTitle: 'List of Headings',
           reuse: false,
           options: [
-            { value: 'i', label: 'A well-known experiment and its conclusion' },
-            { value: 'ii', label: 'Why some of the best decision-makers are the least content' },
-            { value: 'iii', label: 'The case for reducing the number of products in shops' },
-            { value: 'iv', label: 'Evidence that challenges an influential idea' },
-            { value: 'v', label: 'Making choice easier without taking it away' },
-            { value: 'vi', label: 'Personal approaches to managing choice' },
-            { value: 'vii', label: 'The historical growth of consumer choice' },
-            { value: 'viii', label: 'Why businesses prefer to offer more options' },
+            { value: 'i', label: 'Questioning a popular assumption' },
+            { value: 'ii', label: 'A well-known experiment and its conclusion' },
+            { value: 'iii', label: 'Why some of the best decision-makers are the least content' },
+            { value: 'iv', label: 'The case for reducing the number of products in shops' },
+            { value: 'v', label: 'Evidence that challenges an influential idea' },
+            { value: 'vi', label: 'Making choice easier without taking it away' },
+            { value: 'vii', label: 'Personal approaches to managing choice' },
+            { value: 'viii', label: 'The historical growth of consumer choice' },
+            { value: 'ix', label: 'Why businesses prefer to offer more options' },
           ],
           questions: [
-            { n: 27, paragraph: 'B', answer: 'i' },
-            { n: 28, paragraph: 'C', answer: 'iv' },
-            { n: 29, paragraph: 'D', answer: 'ii' },
-            { n: 30, paragraph: 'E', answer: 'v' },
-            { n: 31, paragraph: 'F', answer: 'vi' },
+            { n: 27, paragraph: 'A', answer: 'i' },
+            { n: 28, paragraph: 'B', answer: 'ii' },
+            { n: 29, paragraph: 'C', answer: 'v' },
+            { n: 30, paragraph: 'D', answer: 'iii' },
+            { n: 31, paragraph: 'E', answer: 'vi' },
+            { n: 32, paragraph: 'F', answer: 'vii' },
           ],
         },
         {
           type: 'single',
-          from: 32, to: 36,
+          from: 33, to: 36,
           instructions: 'Choose <b>YES</b> if the statement agrees with the claims of the writer, choose <b>NO</b> if the statement contradicts the claims of the writer, or choose <b>NOT GIVEN</b> if it is impossible to say what the writer thinks about this.',
           options: ['YES', 'NO', 'NOT GIVEN'].map((v) => ({ value: v, label: v })),
           questions: [
-            { n: 32, text: 'The supermarket study has had an impact beyond academic research.', answer: 'YES' },
-            { n: 33, text: 'Choice overload does not exist.', answer: 'NO' },
-            { n: 34, text: 'The original jam study was poorly designed.', answer: 'NOT GIVEN' },
-            { n: 35, text: 'The finding about maximisers is consistent with everyday experience.', answer: 'YES' },
-            { n: 36, text: 'Automatic enrolment in pension schemes has been unpopular with employees.', answer: 'NOT GIVEN' },
+            { n: 33, text: 'The supermarket study has had an impact beyond academic research.', answer: 'YES' },
+            { n: 34, text: 'Choice overload does not exist.', answer: 'NO' },
+            { n: 35, text: 'The original jam study was poorly designed.', answer: 'NOT GIVEN' },
+            { n: 36, text: 'The finding about maximisers is consistent with everyday experience.', answer: 'YES' },
           ],
         },
         {
@@ -217,7 +219,7 @@ export default {
           questions: [
             {
               n: 37,
-              text: 'What does the writer say about the review of similar studies in paragraph C?',
+              text: 'What does the writer say about the review of similar studies in the third paragraph?',
               options: [
                 { value: 'A', label: 'It confirmed the results of the supermarket study.' },
                 { value: 'B', label: 'It found that the number of options had very little effect overall.' },
