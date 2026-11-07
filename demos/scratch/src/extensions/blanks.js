@@ -1,7 +1,7 @@
 import { mergeAttributes, Node } from "@tiptap/core"
 import { VueNodeViewRenderer } from "@tiptap/vue-3"
 
-import BlankView from "~/extensions/BlankView.vue"
+import BlankComponent from "~/components/Blank.vue"
 
 // A gap in the text. It only points at a question (persisted separately as a
 // Question); its answers live on that question, not here. Its number comes from
@@ -40,7 +40,7 @@ export const Blank = Node.create({
   },
 
   addNodeView() {
-    return VueNodeViewRenderer(BlankView)
+    return VueNodeViewRenderer(BlankComponent)
   },
 
   addCommands() {

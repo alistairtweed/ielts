@@ -4,12 +4,12 @@
   import StarterKit from "@tiptap/starter-kit"
 
   import Toolbar from "~/components/Toolbar.vue"
-  import { Blank, blanksIn } from "~/extensions/Blank.js"
-  import { PassageDocument, Section } from "~/extensions/Section.js"
+  import { Blank, blanksIn } from "~/extensions/blanks.js"
+  import { PassageDocument, Section } from "~/extensions/sections.js"
 
   const initialContent = `
+    <h2>The Pencil: A Short History</h2>
     <section>
-      <h2>The Pencil: A Short History</h2>
       <p>Few objects are as familiar, or as overlooked, as the pencil. Its story begins in the 1560s, when shepherds in Borrowdale discovered a black mineral used to mark <span data-blank data-question-id="q-1"></span>.</p>
       <p>Borrowdale graphite was so pure that it could be sawn into sticks and used without further processing.</p>
     </section>
